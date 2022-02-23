@@ -59,6 +59,14 @@ int main(int argc, char *argv[]) {
   }
   if (strcmp(argv[1], "-join") == 0 && strcmp(argv[2], "-host") == 0 && strcmp(argv[4], "-port") == 0
   && strcmp(argv[6], "-username") == 0 && strcmp(argv[8], "-passcode") == 0) {
+    if (strlen(argv[7]) >= sizeof(username) - 1) {
+      printf("Username is too long\n");
+      return 1;
+    }
+    if (strlen(argv[9]) >= sizeof(passcode) - 1) {
+      printf("Incorrect passscode\n");
+      return 1;
+    }
     //strcpy(username, argv[7]);
     //strcpy(passcode, argv[9]);
     strlcpy(username, argv[7], sizeof(username));

@@ -130,7 +130,12 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   if (strcmp(argv[1], "-start") == 0 && strcmp(argv[2], "-port") == 0 && strcmp(argv[4], "-passcode") == 0) {
-    strcpy(passcode, argv[5]);
+    if (strlen(argv[5]) >= sizeof(passcode) - 1) {
+      printf("Passcode too long\n");
+      return 1;
+    }
+    //strcpy(passcode, argv[5]);
+    strlcpy(passcode, argv[5], sizeof(passcode));
   } else {
     printf("Command should be of the format: ./chatserver_udp -start -port <port> -passcode <passcode>\n");
     return 1;
@@ -182,7 +187,8 @@ int main(int argc, char *argv[]) {
     if (new_client) {
       // Check passcode
       if (strcmp(passcode, buffer) != 0) {
-        sprintf(msg, "Incorrect passcode\n");
+        //sprintf(msg, "Incorrect passcode\n");
+        snprintf(msg, sizeof(msg), "Incorrect passcode\n");
         sendto(listen_socket, msg, strlen(msg), 0, (sockaddr*)&s, addr_len);
       } else {
         memset(buffer, '\0', sizeof(buffer));
@@ -208,11 +214,10 @@ int main(int argc, char *argv[]) {
         continue;
       }
 
-      //todo: check if right size or need extra char for \0?
-      char stripped[strlen(buffer)];
+      char stripped[strlen(buffer) + 1];
       memset(stripped, '\0', sizeof(stripped));
-      //todo: replace with strlcpy()
-      strncpy(stripped, buffer, strlen(buffer));
+      //strncpy(stripped, buffer, strlen(buffer));
+      strlcpy(stripped, buffer, sizeof(stripped));
       strip_newline(stripped);
       if (strcmp(stripped, ":Exit") == 0) {
         char temp[] = " left the chatroom\n";

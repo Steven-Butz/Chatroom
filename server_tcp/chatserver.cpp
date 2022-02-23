@@ -129,7 +129,8 @@ void *connection_handler(void *c) {
     send(client->socket_desc, incorrect, strlen(incorrect), 0);
     close(client->socket_desc);
     free(client);
-    pthread_detach(pthread_self());
+    //pthread_detach(pthread_self());
+    pthread_exit(NULL);
     return NULL;
   }
   memset(msg, '\0', sizeof(msg));
@@ -188,7 +189,8 @@ void *connection_handler(void *c) {
   close(client->socket_desc);
   remove_client(client);
   free(client);
-  pthread_detach(pthread_self());
+  //pthread_detach(pthread_self());
+  pthread_exit(NULL);
   return NULL;
 }
 
@@ -198,7 +200,11 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   if (strcmp(argv[1], "-start") == 0 && strcmp(argv[2], "-port") == 0 && strcmp(argv[4], "-passcode") == 0) {
-    // strncpy(passcode, argv[5], strlen(argv[5]));
+    if (strlen(argv[5]) >= sizeof(passcode) - 1) {
+      printf("Passcode too long\n");
+      return 1;
+    }
+    //strcpy(passcode, argv[5]);
     strlcpy(passcode, argv[5], sizeof(passcode));
   } else {
     printf("Command should be of the format: ./chatserver_tcp -start -port <port> -passcode <passcode>\n");
@@ -256,9 +262,6 @@ int main(int argc, char *argv[]) {
     if (pthread_create(&thread_id, NULL, connection_handler, (void*)client) != 0) {
       printf("Thread could not be created\n");
       free(client);
-
-      // TODO: free other clients???
-
       return 1;
     }
   }

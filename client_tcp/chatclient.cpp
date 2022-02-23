@@ -17,7 +17,6 @@ static int disconnect = 0;
 pthread_mutex_t disconnect_mutex = PTHREAD_MUTEX_INITIALIZER;
 struct sockaddr_in server;
 
-// todo: Check size of message for fgets
 void *send_message(void *) {
   char message[2000];
   memset(message, '\0', sizeof(message));
@@ -46,7 +45,8 @@ void *recv_message(void *) {
   pthread_mutex_lock(&disconnect_mutex);
   disconnect = 1;
   pthread_mutex_unlock(&disconnect_mutex);
-  pthread_detach(pthread_self());
+  //pthread_detach(pthread_self());
+  pthread_exit(NULL);
   return NULL;
 }
 
@@ -55,15 +55,20 @@ int main(int argc, char *argv[]) {
     printf("Command should be of the format: ./chatclient_tcp -join -host <hostname> -port <port> -username <username> -passcode <passcode>\n");
     return 1;
   }
-  //todo: validate lengths?
   if (strcmp(argv[1], "-join") == 0 && strcmp(argv[2], "-host") == 0 && strcmp(argv[4], "-port") == 0
   && strcmp(argv[6], "-username") == 0 && strcmp(argv[8], "-passcode") == 0) {
+    if (strlen(argv[7]) >= sizeof(username) - 1) {
+      printf("Username is too long\n");
+      return 1;
+    }
+    if (strlen(argv[9]) >= sizeof(passcode) - 1) {
+      printf("Incorrect passscode\n");
+      return 1;
+    }
     strlcpy(username, argv[7], sizeof(username));
     strlcpy(passcode, argv[9], sizeof(username));
     // strcpy(username, argv[7]);
     // strcpy(passcode, argv[9]);
-    // printf("%s", username);
-    // printf("%s", passcode);
   } else {
     printf("Command should be of the format: ./chatclient_tcp -join -host <hostname> -port <port> -username <username> -passcode <passcode>\n");
     return 1;
