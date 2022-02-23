@@ -10,7 +10,7 @@ Run `make` to compile everything, or `make build-[server|client]_[tcp|udp]` to c
 
 ## Execution
 
-### TCP
+#### TCP
 
 To run the TCP server and client, use the following commands:
 
@@ -18,7 +18,7 @@ To run the TCP server and client, use the following commands:
 
 `./chatclient_tcp -join -host [hostname] -port [port] -username [username] -passcode [passcode]`
 
-### UDP
+#### UDP
 
 To run the UDP server and client, use the following commands:
 
