@@ -1,5 +1,5 @@
 ## Introduction
-A simple client-server chatroom, implemented using C(++) sockets programming. There are 2 pairs of client-server programs, one using TCP and one UDP. The TCP server program is multi-threaded, with one thread for each client connection (max. 10 concurrent clients).
+A simple client-server chatroom, implemented using C sockets programming. There are 2 pairs of client-server programs, one using TCP and one UDP. The TCP server program is multi-threaded, with one thread for each client connection (max. 10 concurrent clients).
 
 ## Compilation
 
